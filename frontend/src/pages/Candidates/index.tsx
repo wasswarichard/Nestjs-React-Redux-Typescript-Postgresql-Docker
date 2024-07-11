@@ -1,5 +1,5 @@
 import { FunctionComponent, useState } from 'react';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Tooltip, Typography } from '@mui/material';
 import Breadcrumbs from '../../components/breadcrumbs';
 import {
    ADD_CANDIDATE_ROUTE_PATH,
@@ -63,15 +63,21 @@ const Candidates: FunctionComponent = () => {
          minWidth: 170,
          format: (id: string) => (
             <>
-               <EditIcon
-                  className="mr-4"
-                  onClick={() => {
-                     navigate(getInterporatedPath(EDIT_CANDIDATE_ROUTE_PATH, { id }));
-                  }}
-               />
-               <VisibilityIcon
-                  onClick={() => navigate(getInterporatedPath(VIEW_CANDIDATE_ROUTE_PATH, { id }))}
-               />
+               <Tooltip title="Edit">
+                  <EditIcon
+                     className="mr-4"
+                     onClick={() => {
+                        navigate(getInterporatedPath(EDIT_CANDIDATE_ROUTE_PATH, { id }));
+                     }}
+                  />
+               </Tooltip>
+               <Tooltip title="View">
+                  <VisibilityIcon
+                     onClick={() =>
+                        navigate(getInterporatedPath(VIEW_CANDIDATE_ROUTE_PATH, { id }))
+                     }
+                  />
+               </Tooltip>
             </>
          ),
       },
