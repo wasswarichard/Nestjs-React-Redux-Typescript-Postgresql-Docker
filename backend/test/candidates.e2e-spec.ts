@@ -1,35 +1,68 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { candidatesMock } from './mocks/candidatesMock';
 import { faker } from '@faker-js/faker';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AppModule } from '../src/app.module';
+import { Candidate } from '../src/candidates/entities/candidate.entity';
+import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('AppController (e2e)', () => {
-  const url = 'http://localhost:3000';
+  let app: INestApplication;
+  let candidateRepository: Repository<Candidate>;
 
-  it('should create a candidate', async () => {
-    const response = await request(url)
-      .post('/api/candidates')
-      .send({
-        ...candidatesMock,
-      });
-    expect(response.status).toBe(HttpStatus.CREATED);
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+
+    candidateRepository = moduleFixture.get<Repository<Candidate>>(getRepositoryToken(Candidate));
+  });
+
+  afterEach(async () => {
+    await candidateRepository.query('DELETE FROM candidate;');
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   it('should get a single candidate', async () => {
-    const response = await request(url)
-      .post('/api/candidates')
+    const response = await request(app.getHttpServer())
+      .post('/candidates')
       .send({
         ...candidatesMock,
         email: faker.internet.email(),
       });
-    const result = await request(url).get(
-      `/api/candidates/${response.body.id}`,
+    const result = await request(app.getHttpServer()).get(
+      `/candidates/${response.body.id}`,
     );
     expect(result.status).toBe(HttpStatus.OK);
   });
 
   it('should get a get all candidate', async () => {
-    const result = await request(url).get(`/api/candidates/`);
+    const result = await request(app.getHttpServer()).get(`/candidates/`);
     expect(result.status).toBe(HttpStatus.OK);
+  });
+
+  it('should get a update candidate', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/candidates')
+      .send({
+        ...candidatesMock,
+        email: faker.internet.email(),
+      });
+    const result = await request(app.getHttpServer())
+      .patch(`/candidates/${response.body.id}`)
+      .send({
+        comment: 'updatedComment',
+      });
+
+    expect(result.status).toBe(HttpStatus.OK);
+    expect(result.body.comment).toEqual('updatedComment');
   });
 });
