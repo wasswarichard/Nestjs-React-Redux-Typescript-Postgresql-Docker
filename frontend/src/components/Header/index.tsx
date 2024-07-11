@@ -9,7 +9,9 @@ const Header: FC<HeaderProps> = () => {
       <AppBar className="appBar">
          <Grid container className="headerContainer">
             <Grid item xs={12}>
-               <Typography variant="h4">Candidates</Typography>
+               <Typography variant="h4" data-testid="company-logo">
+                  Candidates
+               </Typography>
             </Grid>
          </Grid>
       </AppBar>

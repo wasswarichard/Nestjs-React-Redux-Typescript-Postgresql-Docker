@@ -15,7 +15,11 @@ interface Props {
 
 const BreadcrumbsWrapper: FC<Props> = ({ data }) => {
    return (
-      <Breadcrumbs separator={<NavigateNext fontSize="small" />} className="breadcrumbs mt-4">
+      <Breadcrumbs
+         separator={<NavigateNext fontSize="small" />}
+         className="breadcrumbs mt-4"
+         data-testid="bread-crumb"
+      >
          {data.map(({ label, navigateTo }: Breadcrumb, index: number) => (
             <Link to={navigateTo} key={label}>
                <Typography
