@@ -1,4 +1,7 @@
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -29,8 +32,11 @@ export class CreateCandidateDto {
   phoneNumber: string;
 
   @IsOptional()
-  @IsString()
-  timeInterval: string;
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(2, { message: 'At least one time is required' })
+  @ArrayMaxSize(2, { message: 'No more than 2 time are allowed' })
+  timeInterval: string[];
 
   @IsOptional()
   @IsUrl()

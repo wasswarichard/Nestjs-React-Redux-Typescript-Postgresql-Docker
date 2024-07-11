@@ -5,7 +5,7 @@ export interface ICandidate {
    email: string;
    comment: string;
    phoneNumber: string;
-   timeInterval: string;
+   timeInterval: string[];
    linkedin: string;
    github: string;
 }

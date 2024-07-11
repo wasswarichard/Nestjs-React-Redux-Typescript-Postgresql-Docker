@@ -50,7 +50,11 @@ const DetailsInfoPage = ({ candidate }: { candidate: ICandidate }) => {
                   <Typography variant="body1">Time Interval</Typography>
                </TableCell>
                <TableCell>
-                  <Typography variant="body1">{candidate.timeInterval}</Typography>
+                  <Typography variant="body1">
+                     {candidate.timeInterval
+                        .map((time) => new Date(time).toLocaleTimeString())
+                        .join(' - ')}
+                  </Typography>
                </TableCell>
             </TableRow>
             <TableRow>

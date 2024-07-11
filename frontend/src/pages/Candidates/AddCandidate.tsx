@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import { ICandidate } from '../../types';
 import { getInterporatedPath } from '../../utils';
+import { DateRangePicker } from '../../components/DateRangePicker.tsx';
 
 const validationSchema = yup.object({
    firstname: yup.string().required('First Name is required'),
@@ -26,7 +27,7 @@ const validationSchema = yup.object({
    email: yup.string().email().required('Email is required'),
    comment: yup.string().required('Comment is required'),
    phoneNumber: yup.string().nullable(),
-   timeInterval: yup.string().nullable(),
+   timeInterval: yup.array().of(yup.string()).nullable(),
    linkedin: yup.string().nullable(),
    github: yup.string().nullable(),
 });
@@ -56,6 +57,8 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
       register,
       formState: { errors },
       reset,
+      getValues,
+      setValue,
    } = useForm({
       defaultValues: {
          firstname: '',
@@ -108,9 +111,9 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
          <form onSubmit={handleSubmit(onSubmit)} className="mt-2">
             <Grid container spacing={2}>
                <Grid item xs={12} sm={6}>
+                  <Typography className="mb-1">First Name</Typography>
                   <TextField
                      {...register('firstname')}
-                     label="First Name"
                      name="firstname"
                      fullWidth
                      id="firstname"
@@ -119,9 +122,9 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                   />
                </Grid>
                <Grid item xs={12} sm={6}>
+                  <Typography className="mb-1">Last Name</Typography>
                   <TextField
                      {...register('lastname')}
-                     label="Last Name"
                      name="lastname"
                      fullWidth
                      id="lastname"
@@ -130,10 +133,10 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                   />
                </Grid>
                <Grid item xs={12} sm={6}>
+                  <Typography className="mb-1">Email</Typography>
                   <TextField
                      type="email"
                      {...register('email')}
-                     label=" Email"
                      autoComplete="email"
                      name="email"
                      fullWidth
@@ -143,9 +146,9 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                   />
                </Grid>
                <Grid item xs={12} sm={6}>
+                  <Typography className="mb-1">Comment</Typography>
                   <TextField
                      {...register('comment')}
-                     label="Comment"
                      name="comment"
                      fullWidth
                      id="comment"
@@ -154,9 +157,9 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                   />
                </Grid>
                <Grid item xs={12} sm={6}>
+                  <Typography className="mb-1">Github Link</Typography>
                   <TextField
                      {...register('github')}
-                     label="Github Link"
                      name="github"
                      fullWidth
                      id="github"
@@ -165,9 +168,9 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                   />
                </Grid>
                <Grid item xs={12} sm={6}>
+                  <Typography className="mb-1">Phone Number</Typography>
                   <TextField
                      {...register('phoneNumber')}
-                     label="Phone Number"
                      name="phoneNumber"
                      fullWidth
                      id="phoneNumber"
@@ -175,10 +178,10 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                      helperText={errors?.phoneNumber?.message}
                   />
                </Grid>
-               <Grid item xs={12} sm={6}>
+               <Grid item xs={12} sm={6} className="mt-2">
+                  <Typography>Linkedin Link</Typography>
                   <TextField
                      {...register('linkedin')}
-                     label="Linkedin Link"
                      name="linkedin"
                      fullWidth
                      id="linkedin"
@@ -186,15 +189,14 @@ const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
                      helperText={errors?.linkedin?.message}
                   />
                </Grid>
+
                <Grid item xs={12} sm={6}>
-                  <TextField
-                     {...register('timeInterval')}
-                     label="Time Interval"
-                     name="timeInterval"
-                     fullWidth
-                     id="timeInterval"
-                     error={!!errors?.timeInterval}
-                     helperText={errors?.timeInterval?.message}
+                  <Typography>Time Interval</Typography>
+                  <DateRangePicker
+                     timeIntervals={getValues('timeInterval')}
+                     handleChangeTime={(value) => {
+                        setValue('timeInterval', value);
+                     }}
                   />
                </Grid>
             </Grid>

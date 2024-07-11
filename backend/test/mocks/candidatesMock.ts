@@ -8,5 +8,8 @@ export const candidatesMock = {
   linkedin: faker.internet.url().replaceAll(' ', ''),
   github: faker.internet.url().replaceAll(' ', ''),
   phoneNumber: '0778000000',
-  timeInterval: faker.person.firstName(),
+  timeInterval: [
+    'Wed, 10 Jul 2024 21:30:00 GMT',
+    'Wed, 10 Jul 2024 21:15:00 GMT',
+  ],
 };
