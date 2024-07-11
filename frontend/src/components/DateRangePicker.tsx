@@ -30,7 +30,10 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props) => {
                value={fromTimeValue}
                onChange={(newValue) => {
                   setFromTimeValue(newValue);
-                  handleChangeTime([new Date(fromTimeValue).toISOString(), new Date(toTimeValue).toISOString()]);
+                  handleChangeTime([
+                     new Date(fromTimeValue).toISOString(),
+                     new Date(toTimeValue).toISOString(),
+                  ]);
                }}
             />
             <TimePicker
@@ -38,7 +41,10 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props) => {
                value={toTimeValue}
                onChange={(newValue) => {
                   setToTimeValue(newValue);
-                 handleChangeTime([new Date(fromTimeValue).toISOString(), new Date(toTimeValue).toISOString()]);
+                  handleChangeTime([
+                     new Date(fromTimeValue).toISOString(),
+                     new Date(toTimeValue).toISOString(),
+                  ]);
                }}
             />
          </DemoContainer>
