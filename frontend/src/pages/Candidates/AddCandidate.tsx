@@ -1,18 +1,24 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import {
    ADD_CANDIDATE_ROUTE_PATH,
    INDEX_ROUTE_PATH,
    CANDIDATES_ROUTE_PATH,
+   EDIT_CANDIDATE_ROUTE_PATH,
 } from '../../route-paths';
 import { Grid, TextField, Typography } from '@mui/material';
 import Breadcrumbs from '../../components/breadcrumbs';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { post } from '../../api';
-import { CREATE_CANDIDATES_ENDPOINT_PATH } from '../../endpoint-paths';
+import { patch, post } from '../../api';
+import {
+   CREATE_CANDIDATES_ENDPOINT_PATH,
+   UPDATE_CANDIDATE_ENDPOINT_PATH,
+} from '../../endpoint-paths';
 import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
+import { ICandidate } from '../../types';
+import { getInterporatedPath } from '../../utils';
 
 const validationSchema = yup.object({
    firstname: yup.string().required('First Name is required'),
@@ -25,20 +31,31 @@ const validationSchema = yup.object({
    github: yup.string().nullable(),
 });
 
-const breadcrumbs = [
-   { label: 'Explorer', navigateTo: INDEX_ROUTE_PATH },
-   { label: 'Candidate', navigateTo: CANDIDATES_ROUTE_PATH },
-   { label: 'create', navigateTo: ADD_CANDIDATE_ROUTE_PATH },
-];
-const AddCandidate: FunctionComponent = () => {
+interface AddCandidateProps {
+   candidate?: ICandidate;
+}
+const AddCandidate: FunctionComponent<AddCandidateProps> = (props) => {
+   const { candidate } = props;
    const navigate = useNavigate();
    const [submittingCandidate, setSubmittingCandidate] = useState<boolean>(false);
    const [errorMessage, setErrorMessage] = useState<string>('');
+
+   const breadcrumbs = [
+      { label: 'Explorer', navigateTo: INDEX_ROUTE_PATH },
+      { label: 'Candidate', navigateTo: CANDIDATES_ROUTE_PATH },
+      candidate?.email
+         ? {
+              label: 'Edit',
+              navigateTo: getInterporatedPath(EDIT_CANDIDATE_ROUTE_PATH, { id: candidate.id }),
+           }
+         : { label: 'create', navigateTo: ADD_CANDIDATE_ROUTE_PATH },
+   ];
 
    const {
       handleSubmit,
       register,
       formState: { errors },
+      reset,
    } = useForm({
       defaultValues: {
          firstname: '',
@@ -53,11 +70,22 @@ const AddCandidate: FunctionComponent = () => {
       resolver: yupResolver(validationSchema),
    });
 
+   useEffect(() => {
+      if (candidate && candidate.email) {
+         reset({ ...candidate });
+      }
+   }, [candidate]);
+
    const onSubmit = async (data: yup.InferType<typeof validationSchema>) => {
       setSubmittingCandidate(true);
       try {
-         const response = await post(CREATE_CANDIDATES_ENDPOINT_PATH, { ...data });
-         if (response.status == 201) {
+         const response = candidate?.email
+            ? await patch(
+                 getInterporatedPath(UPDATE_CANDIDATE_ENDPOINT_PATH, { id: candidate.id }),
+                 { ...data },
+              )
+            : await post(CREATE_CANDIDATES_ENDPOINT_PATH, { ...data });
+         if ([200, 201].includes(response.status)) {
             setSubmittingCandidate(false);
             setErrorMessage('');
             navigate(CANDIDATES_ROUTE_PATH);
@@ -75,7 +103,7 @@ const AddCandidate: FunctionComponent = () => {
             <Breadcrumbs data={breadcrumbs} />
          </div>
          <div className="w-full mt-4">
-            <Typography variant="h6">Create Candidate</Typography>
+            <Typography variant="h6">{candidate?.email ? 'Edit' : 'Create'} Candidate</Typography>
          </div>
          <form onSubmit={handleSubmit(onSubmit)} className="mt-2">
             <Grid container spacing={2}>
@@ -177,7 +205,7 @@ const AddCandidate: FunctionComponent = () => {
                   sx={{ mt: 2 }}
                   loading={submittingCandidate}
                >
-                  Add Candidate
+                  {candidate?.email ? 'Edit' : 'Add'} Candidate
                </LoadingButton>
             </div>
             <div className="flex items-center justify-center">

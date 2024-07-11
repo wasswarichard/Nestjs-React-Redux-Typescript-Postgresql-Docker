@@ -4,6 +4,7 @@ import Breadcrumbs from '../../components/breadcrumbs';
 import {
    ADD_CANDIDATE_ROUTE_PATH,
    CANDIDATES_ROUTE_PATH,
+   EDIT_CANDIDATE_ROUTE_PATH,
    INDEX_ROUTE_PATH,
    VIEW_CANDIDATE_ROUTE_PATH,
 } from '../../route-paths';
@@ -13,36 +14,12 @@ import { addSearchParams, getInterporatedPath } from '../../utils';
 import { GET_CANDIDATES_ENDPOINT_PATH } from '../../endpoint-paths';
 import DataTable, { ColumnConfig } from '../../components/DataTable.tsx';
 import { useNavigate } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+
 const breadcrumbs = [
    { label: 'Explorer', navigateTo: INDEX_ROUTE_PATH },
    { label: 'Candidates', navigateTo: CANDIDATES_ROUTE_PATH },
-];
-
-const columns: ColumnConfig[] = [
-   {
-      id: 'firstname',
-      label: 'First Name',
-      minWidth: 170,
-      format: (name: string) => name,
-   },
-   {
-      id: 'lastname',
-      label: 'Last Name',
-      minWidth: 170,
-      format: (name: string) => name,
-   },
-   {
-      id: 'email',
-      label: 'Email',
-      minWidth: 170,
-      format: (name: string) => name,
-   },
-   {
-      id: 'comment',
-      label: 'Comment',
-      minWidth: 170,
-      format: (name: string) => name,
-   },
 ];
 
 const Candidates: FunctionComponent = () => {
@@ -55,9 +32,50 @@ const Candidates: FunctionComponent = () => {
    const handleChange = (value: number) => {
       setOffset(value);
    };
-   const onClickRow = (id: number) => {
-      navigate(getInterporatedPath(VIEW_CANDIDATE_ROUTE_PATH, { id }));
-   };
+   const columns: ColumnConfig[] = [
+      {
+         id: 'firstname',
+         label: 'First Name',
+         minWidth: 170,
+         format: (name: string) => name,
+      },
+      {
+         id: 'lastname',
+         label: 'Last Name',
+         minWidth: 170,
+         format: (name: string) => name,
+      },
+      {
+         id: 'email',
+         label: 'Email',
+         minWidth: 170,
+         format: (name: string) => name,
+      },
+      {
+         id: 'comment',
+         label: 'Comment',
+         minWidth: 170,
+         format: (name: string) => name,
+      },
+      {
+         id: 'id',
+         label: 'Actions',
+         minWidth: 170,
+         format: (id: string) => (
+            <>
+               <EditIcon
+                  className="mr-4"
+                  onClick={() => {
+                     navigate(getInterporatedPath(EDIT_CANDIDATE_ROUTE_PATH, { id }));
+                  }}
+               />
+               <VisibilityIcon
+                  onClick={() => navigate(getInterporatedPath(VIEW_CANDIDATE_ROUTE_PATH, { id }))}
+               />
+            </>
+         ),
+      },
+   ];
 
    return (
       <Grid container>
@@ -73,7 +91,7 @@ const Candidates: FunctionComponent = () => {
             <Typography variant="h6">All Candidate</Typography>
          </Grid>
          <div className="mt-4 w-full">
-            { data && (
+            {data && (
                <DataTable
                   tableData={data.candidates as ICandidate[]}
                   totalRecords={data.count}
@@ -82,7 +100,6 @@ const Candidates: FunctionComponent = () => {
                   recordsPerPage={limit}
                   paginatedTable={true}
                   fullPageTable={true}
-                  onClickRow={onClickRow}
                />
             )}
          </div>
