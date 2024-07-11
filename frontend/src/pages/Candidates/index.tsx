@@ -27,7 +27,7 @@ const Candidates: FunctionComponent = () => {
    const [offset, setOffset] = useState<number>(0);
    const limit = 10;
    const { data } = useSWR(
-      addSearchParams(GET_CANDIDATES_ENDPOINT_PATH, { limit, page: offset * limit }),
+      addSearchParams(GET_CANDIDATES_ENDPOINT_PATH, { limit, page: offset }),
    );
    const handleChange = (value: number) => {
       setOffset(value);

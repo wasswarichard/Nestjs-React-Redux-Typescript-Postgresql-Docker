@@ -43,7 +43,7 @@ const DataTable: FunctionComponent<DataTableProps> = ({
 }) => {
    const handleChangePage = (_: ChangeEvent<unknown>, newPage: number) => {
       if (handlePageChange) {
-         handlePageChange(newPage - 1);
+         handlePageChange(newPage);
       }
    };
 
