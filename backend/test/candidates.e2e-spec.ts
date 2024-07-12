@@ -20,7 +20,9 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    candidateRepository = moduleFixture.get<Repository<Candidate>>(getRepositoryToken(Candidate));
+    candidateRepository = moduleFixture.get<Repository<Candidate>>(
+      getRepositoryToken(Candidate),
+    );
   });
 
   afterEach(async () => {
