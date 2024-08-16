@@ -65,3 +65,6 @@ Frontend:
 ![Snapshot of backend cases](./frontend/docs/frontend_tests.png)
 
 Thanks for your time :)
+
+Using Kubernetes
+https://chatgpt.com/share/816ca144-62ba-4757-9130-008b3d924358
