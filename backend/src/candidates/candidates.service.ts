@@ -30,8 +30,7 @@ export class CandidatesService {
       );
     }
     try {
-      const candidate =
-        await this.candidatesRepository.create(createCandidateDto);
+      const candidate = this.candidatesRepository.create(createCandidateDto);
       return this.candidatesRepository.save(candidate);
     } catch (error) {
       throw new BadRequestException(error.message);
